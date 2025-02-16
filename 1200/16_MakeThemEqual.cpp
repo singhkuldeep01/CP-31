@@ -26,50 +26,37 @@ void preCompute(){
         }
     }
 }
-vector<vector<int>> dp;
-int f(int i , vector<pair<int,int>> &v , int k){
-    if(i >= v.size()) return 0;
-    if(dp[i][k] != -1) return dp[i][k];
-    //  take 
-    int cost = v[i].first;
-    int weight = v[i].second;
-
-    int ans1 = 0;
-    if(k >= cost) ans1 += f(i + 1 , v , k-cost)+weight;
-    int ans2 = 0;
-    ans2 += f(i+1 , v , k);
-    return dp[i][k] = max(ans1 , ans2);
-}
-int f1(vector<pair<int,int>> &v , int k){
+int f1(vector<pair<int,int>> &v , int k ){
     int n = v.size();
+    vector<int> prev(k+1 , 0);
+    vector<int> curr(k+1 , 0);
     for(int i = n-1 ; i >= 0 ; i--){
         for(int j = 0 ; j <= k ; j++){
             int cost = v[i].first;
             int weight = v[i].second;
             int ans1 = 0;
-            if(j >= cost) ans1 += dp[i + 1][j-cost]+weight;
+            if(j >= cost) ans1 += prev[j-cost]+weight;
             int ans2 = 0;
-            ans2 += dp[i+1][j];
-            dp[i][j] = max(ans1 , ans2);
+            ans2 += prev[j];
+            curr[j] = max(ans1 , ans2);
         }
+        prev = curr;
     }
-    return dp[0][k];
+    return curr[k];
 }
 void solve() {
     int n , k;
     cin>>n>>k;
     vector<int> b(n);
     vector<int> c(n);
-    for(int i = 0 ; i < n ; i++) cin>>b[i];
+    for(int i = 0 ; i < n ; i++) 5n   cin>>b[i];
     for(int i = 0 ; i < n ; i++) cin>>c[i];
     vector<pair<int,int>> v(n);
     for(int i = 0 ; i < n ; i++){
         v[i].first = pcDP[b[i]];
         v[i].second = c[i];
     }
-    dp.clear();
-    dp.resize(n+1 , vector<int>(k+1 , 0));
-    // cout<<f(0 , v , k)<<endl;
+    k = min(k , 12*n);
     cout<<f1(v , k)<<endl;
 }
 
